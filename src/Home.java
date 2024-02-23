@@ -1,5 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -8,21 +10,32 @@ public class Home extends JFrame
     // Panel variable setup.
     private JPanel bgPanel1;
     private JPanel bgPanel2;
+    private JPanel tabPanel1;
+    private JPanel tabPanel2;
     
     // Label variable setup.
     private JLabel exitLabelButton;
     private JLabel minimizeLabelButton;
     private JLabel titLabel;
+    private JLabel menuLabel1;
+    private JLabel menuLabel2;
+
+    // Button variable setup.
+    private JButton menuButton1;
+    private JButton menuButton2;
 
     // Separator variable setup.
     private JSeparator titSeparator;
+
+    private JTabbedPane jTab;
 
     // Show display
     public Home()
     {
         setup();
         titlePanel(bgPanel1, exitLabelButton, minimizeLabelButton, titLabel, titSeparator);
-        formBackgroundPanel(bgPanel2);
+        formBackgroundPanel(menuLabel1, menuLabel2);
+        menuPanel(bgPanel2);
     }
 
     // Setup display.
@@ -31,7 +44,7 @@ public class Home extends JFrame
         setUndecorated(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(new Dimension(1200, 800));
-        setMinimumSize(new Dimension(1200, 800));
+        setResizable(false);
         setLayout(null);
         setLocation(400, 100);
         setTitle("Clock Store");
@@ -92,13 +105,116 @@ public class Home extends JFrame
     }
 
     // Form Background Panel setup.
-    private void formBackgroundPanel(JPanel jPanel)
+    private void formBackgroundPanel(JLabel jLabel1, JLabel jLabel2)
+    {
+        jTab = new JTabbedPane();
+        jTab.setBounds(250, 40, 1002, 760);
+        jTab.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
+        jTab.setTabPlacement(JTabbedPane.RIGHT);
+
+        tabPanel1 = new JPanel();
+        tabPanel1.setBounds(250, 40, 950, 760);
+        tabPanel1.setBackground(new Color(61, 61 ,61));
+        tabPanel1.setLayout(null);
+        add(tabPanel1);
+
+        jLabel1 = new JLabel();
+        jLabel1.setText("Welcome");
+        jLabel1.setBounds(20, 5, 200, 50);
+        jLabel1.setFont(new Font("", Font.PLAIN, 20));
+        jLabel1.setForeground(new Color(255, 255, 255));
+        add(jLabel1);
+
+        tabPanel1.add(jLabel1);
+
+        tabPanel2 = new JPanel();
+        tabPanel2.setBounds(250, 40, 950, 760);
+        tabPanel2.setBackground(new Color(61, 61 ,61));
+        tabPanel2.setLayout(null);
+        add(tabPanel2);
+
+        jLabel2 = new JLabel();
+        jLabel2.setText("Hello");
+        jLabel2.setBounds(20, 5, 200, 50);
+        jLabel2.setFont(new Font("", Font.PLAIN, 20));
+        jLabel2.setForeground(new Color(255, 255, 255));
+        add(jLabel2);
+
+        tabPanel2.add(jLabel2);
+
+        jTab.addTab("Tab1", tabPanel1);
+        jTab.addTab("Tab2", tabPanel2);
+
+        add(jTab);
+    }
+
+    // Menu Panel setup.
+    private void menuPanel(JPanel jPanel)
     {
         jPanel = new JPanel();
-        jPanel.setBounds(0, 40, 1200, 760);
-        jPanel.setBackground(new Color(61, 61 ,61));
+        jPanel.setBounds(0, 40, 250, 760);
+        jPanel.setBackground(new Color(200, 200 ,200));
         jPanel.setLayout(null);
         add(jPanel);
+
+        menuButton1 = new JButton();
+        menuButton1.setText("SI base units");
+        menuButton1.setBackground(new Color(200, 200, 200));
+        menuButton1.setFont(new Font("", Font.BOLD, 25));
+        menuButton1.setBounds(20, 10, 200, 40);
+        menuButton1.setBorder(null);
+        menuButton1.setBorderPainted(false);
+        menuButton1.addActionListener(new ActionListener() 
+        {
+            public void actionPerformed(ActionEvent evt)
+            {
+                menuButton1Performed(evt);
+            }
+        });
+        menuButton1.addMouseListener(new MouseAdapter() 
+        {
+            public void mouseEntered(MouseEvent evt)
+            {
+                menuButton1.setForeground(new Color(255, 87, 51));
+            }
+        
+            public void mouseExited(MouseEvent evt)
+            {
+                menuButton1.setForeground(new Color(0, 0, 0));
+            }
+        });
+        add(menuButton1);
+
+        menuButton2 = new JButton();
+        menuButton2.setText("Derived SI units");
+        menuButton2.setBackground(new Color(200, 200, 200));
+        menuButton2.setFont(new Font("", Font.BOLD, 25));
+        menuButton2.setBounds(20, 60, 200, 40);
+        menuButton2.setBorder(null);
+        menuButton2.setBorderPainted(false);
+        menuButton2.addActionListener(new ActionListener() 
+        {
+            public void actionPerformed(ActionEvent evt)
+            {
+                menuButton2Performed(evt);
+            }
+        });
+        menuButton2.addMouseListener(new MouseAdapter() 
+        {
+            public void mouseEntered(MouseEvent evt)
+            {
+                menuButton2.setForeground(new Color(255, 87, 51));
+            }
+        
+            public void mouseExited(MouseEvent evt)
+            {
+                menuButton2.setForeground(new Color(0, 0, 0));
+            }
+        });
+        add(menuButton2);
+
+        jPanel.add(menuButton1);
+        jPanel.add(menuButton2);
     }
 
     // Exit Button setup.
@@ -111,6 +227,16 @@ public class Home extends JFrame
     private void minimizeLabelButtonPerformed(MouseEvent evt)
     {
         setState(Frame.ICONIFIED);
+    }
+
+    private void menuButton1Performed(ActionEvent evt)
+    {
+        jTab.setSelectedIndex(0);
+    }
+
+    private void menuButton2Performed(ActionEvent evt)
+    {
+        jTab.setSelectedIndex(1);
     }
 
     // Main Run program.
