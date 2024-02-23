@@ -10,6 +10,7 @@ public class Home extends JFrame
     // Panel variable setup.
     private JPanel titlebar;
     private JPanel bgPanel2;
+    private JPanel calculPanel;
     private JPanel tab1;
     private JPanel tab2;
     private JPanel tab3;
@@ -28,6 +29,7 @@ public class Home extends JFrame
     private JLabel textheiLabel;
     private JLabel textweiunitLabel;
     private JLabel textheiunitLabel;
+    private JLabel textBMILabel;
 
     // Button variable setup.
     private JButton calculButton;
@@ -40,6 +42,7 @@ public class Home extends JFrame
     private JSeparator titSeparator;
     private JSeparator menuSeparator;
 
+    // Tabbed variable setup.
     private JTabbedPane jTabbed;
 
     // Show display
@@ -160,7 +163,7 @@ public class Home extends JFrame
         tab3.setBounds(250, 40, 950, 760);
         tab3.setBackground(new Color(255, 255, 255));
         tab3.setLayout(null);
-        calculBMI();
+        calculBMIPanel();
 
         jTabbed.addTab("1", tab1);
         jTabbed.addTab("2", tab2);
@@ -261,8 +264,14 @@ public class Home extends JFrame
         bgPanel2.add(menuSeparator);
     }
 
-    private void calculBMI()
+    // Calculator BMI Panel.
+    private void calculBMIPanel()
     {
+        calculPanel = new JPanel();
+        calculPanel.setBounds(20, 20, 910, 300);
+        calculPanel.setBackground(new Color(152, 251, 152));
+        calculPanel.setLayout(null);
+
         textweiLabel = new JLabel();
         textweiLabel.setText("Weight:");
         textweiLabel.setFont(new Font("", Font.BOLD, 30));
@@ -293,11 +302,13 @@ public class Home extends JFrame
 
         weiTextInput = new JTextField();
         weiTextInput.setBorder(BorderFactory.createMatteBorder(0, 0, 2, 0, new Color(0, 0, 0)));
+        weiTextInput.setBackground(calculPanel.getBackground());
         weiTextInput.setFont(new Font("", Font.PLAIN, 30));
         weiTextInput.setBounds(160, 50, 500, 40);
 
         heiTextInput = new JTextField();
         heiTextInput.setBorder(BorderFactory.createMatteBorder(0, 0, 2, 0, new Color(0, 0, 0)));
+        heiTextInput.setBackground(calculPanel.getBackground());
         heiTextInput.setFont(new Font("", Font.PLAIN, 30));
         heiTextInput.setBounds(160, 150, 500, 40);
 
@@ -305,24 +316,36 @@ public class Home extends JFrame
         calculButton.setText("Enter");
         calculButton.setFont(new Font("", Font.PLAIN, 20));
         calculButton.setBorder(BorderFactory.createLineBorder(new Color(0, 0, 0), 2));
-        calculButton.setBackground(null);
+        calculButton.setBackground(calculPanel.getBackground());
         calculButton.setForeground(new Color(0, 0, 0));
         calculButton.setBounds(40, 250, 100, 40);
         calculButton.addActionListener(new ActionListener() 
         {
             public void actionPerformed(ActionEvent evt)
             {
-                calaulSystem(evt);
+                double wei = Double.parseDouble(weiTextInput.getText());
+                double hei = Double.parseDouble(heiTextInput.getText());
+                textBMILabel.setText(CalculatorBMI.calculatorBMI(wei, hei));
             }    
         });
+
+        textBMILabel = new JLabel();
+        textBMILabel.setText("BMI");
+        textBMILabel.setFont(new Font("", Font.BOLD, 30));
+        textBMILabel.setForeground(new Color(0, 0, 0));
+        textBMILabel.setBounds(200, 250, 200, 40);
+        textBMILabel.setHorizontalAlignment(JLabel.LEFT);
 
         tab3.add(textweiLabel);
         tab3.add(textheiLabel);
         tab3.add(textweiunitLabel);
         tab3.add(textheiunitLabel);
+        tab3.add(textBMILabel);
         tab3.add(weiTextInput);
         tab3.add(heiTextInput);
         tab3.add(calculButton);
+
+        tab3.add(calculPanel);
     }
 
     // Exit Button setup.
@@ -337,24 +360,22 @@ public class Home extends JFrame
         setState(Frame.ICONIFIED);
     }
 
+    // Moving Tab.
     private void menuLabelButton1Performed(MouseEvent evt)
     {
         jTabbed.setSelectedIndex(0);
     }
 
+    // Moving Tab.
     private void menuLabelButton2Performed(MouseEvent evt)
     {
         jTabbed.setSelectedIndex(1);
     }
 
+    // Moving Tab.
     private void menuLabelButton3Performed(MouseEvent evt)
     {
         jTabbed.setSelectedIndex(2);
-    }
-
-    private void calaulSystem(ActionEvent evt)
-    {
-
     }
 
     // Main Run program.
