@@ -51,6 +51,11 @@ public class Home extends JFrame implements MouseListener, ActionListener
     // Tabbed variable setup.
     private JTabbedPane jTabbed;
 
+    // Table variable setup.
+    private JTable foodTable;
+
+    private JScrollPane scrollPane;
+
     // Show display
     public Home()
     {
@@ -148,9 +153,9 @@ public class Home extends JFrame implements MouseListener, ActionListener
         bmiInfoPanel();
 
         // Add Tab zone.
-        jTabbed.addTab("1", tab1);
-        jTabbed.addTab("2", tab2);
-        jTabbed.addTab("3", tab3);
+        jTabbed.add("1", tab1);
+        jTabbed.add("2", tab2);
+        jTabbed.add("3", tab3);
         add(jTabbed);
     }
 
@@ -240,8 +245,20 @@ public class Home extends JFrame implements MouseListener, ActionListener
         textmenuLabel2.setFont(new Font("", Font.BOLD, 40));
         textmenuLabel2.setForeground(new Color(0, 0, 0));
 
+        String[] column = {"ID", "Name", "Price", "Calorie"};
+        
+        String[][] data = {{"1", "Rice", "10", "100"}, {"", "", "", ""}, {"", "", "", ""}, {"", "", "", ""}};
+        
+        foodTable = new JTable(data, column);
+        foodTable.setRowHeight(40);
+        foodTable.setFont(new Font("", Font.PLAIN, 16));
+
+        scrollPane = new JScrollPane(foodTable);
+        scrollPane.setBounds(40, 80, 870, 660);
+
         // Add zone.
         tab2.add(textmenuLabel2);
+        tab2.add(scrollPane, BorderLayout.CENTER);
     }
 
     // Text in Tab Panel-3
