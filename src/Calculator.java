@@ -1,4 +1,4 @@
-public class CalculatorBMI 
+public class Calculator
 {
     public static String calculatorBMI(double wei, double hei)
     {
