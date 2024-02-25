@@ -211,17 +211,20 @@ public class Home extends JFrame implements MouseListener, ActionListener
     // Text in Tab Panel-1
     private void homeInfoPanel()
     {
+        // Text Welcom.
         textmenuLabel1 = new JLabel();
         textmenuLabel1.setText("Welcome");
         textmenuLabel1.setBounds(20, 205, 200, 50);
         textmenuLabel1.setFont(new Font("", Font.PLAIN, 20));
         textmenuLabel1.setForeground(new Color(0, 0, 0));
 
+        // Image icon.
         iconImg = new JLabel();
         iconImg.setIcon(new ImageIcon("src\\image\\firstlog200px.png"));
         iconImg.setBounds(350, 20, 200, 200);
         iconImg.setHorizontalTextPosition(JLabel.CENTER);
         
+        // Add zone
         tab1.add(textmenuLabel1);
         tab1.add(iconImg);
     }
@@ -229,7 +232,7 @@ public class Home extends JFrame implements MouseListener, ActionListener
     // Text in Tab Panel-2
     private void menuInfoPanel()
     {
-        
+        // Text Menu.
         textmenuLabel2 = new JLabel();
         textmenuLabel2.setText("Menu");
         textmenuLabel2.setBounds(430, 10, 200, 50);
@@ -237,7 +240,7 @@ public class Home extends JFrame implements MouseListener, ActionListener
         textmenuLabel2.setFont(new Font("", Font.BOLD, 40));
         textmenuLabel2.setForeground(new Color(0, 0, 0));
 
-
+        // Add zone.
         tab2.add(textmenuLabel2);
     }
 
