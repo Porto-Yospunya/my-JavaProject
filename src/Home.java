@@ -1,12 +1,15 @@
 import javax.swing.*;
 import javax.swing.plaf.ColorUIResource;
 import javax.swing.plaf.FontUIResource;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.sql.ResultSet;
 
 public class Home extends JFrame implements MouseListener, ActionListener
 {
@@ -36,6 +39,8 @@ public class Home extends JFrame implements MouseListener, ActionListener
 
     private JLabel iconImg;
 
+    private JLabel searchLabelButton;
+
     // Button variable setup.
     private JButton calculButton;
     private JButton warningButton;
@@ -43,6 +48,8 @@ public class Home extends JFrame implements MouseListener, ActionListener
     // Text Field variable setup.
     private JTextField weiTextInput;
     private JTextField heiTextInput;
+
+    private JTextField searchfoodText;
 
     // Separator variable setup.
     private JSeparator titSeparator;
@@ -55,6 +62,12 @@ public class Home extends JFrame implements MouseListener, ActionListener
     private JTable foodTable;
 
     private JScrollPane scrollPane;
+
+    private DefaultTableModel model;
+
+    private DefaultTableCellRenderer renderer;
+
+    private DBConnection db;
 
     // Show display
     public Home()
@@ -240,24 +253,93 @@ public class Home extends JFrame implements MouseListener, ActionListener
         // Text Menu.
         textmenuLabel2 = new JLabel();
         textmenuLabel2.setText("Menu");
-        textmenuLabel2.setBounds(430, 10, 200, 50);
+        textmenuLabel2.setBounds(430, 30, 200, 50);
         textmenuLabel2.setHorizontalTextPosition(JLabel.CENTER);
         textmenuLabel2.setFont(new Font("", Font.BOLD, 40));
         textmenuLabel2.setForeground(new Color(0, 0, 0));
 
-        String[] column = {"ID", "Name", "Price", "Calorie"};
+        // Text Field Search.
+        searchfoodText = new JTextField();
+        searchfoodText.setBounds(40, 100, 750, 30);
+        searchfoodText.setFont(new Font("", Font.PLAIN, 16));
+        searchfoodText.setBackground(new Color(255, 255, 255));
+        searchfoodText.setBorder(BorderFactory.createLineBorder(new Color(0, 0, 0), 2));
+
+        // Text Search.
+        searchLabelButton = new JLabel();
+        searchLabelButton.setText("Search");
+        searchLabelButton.setBounds(799, 100, 110, 30);
+        searchLabelButton.setFont(new Font("", Font.BOLD, 18));
+        searchLabelButton.setBorder(BorderFactory.createLineBorder(new Color(0, 0, 0), 2));
+        searchLabelButton.setHorizontalAlignment(JLabel.CENTER);
+        searchLabelButton.addMouseListener(this);
+
+        // Table setup.
+        String[] colname = {"Menu", "Calories", "Protein", "Carbohydrate", "Fat", "Codium"};
+        foodTable = new JTable();
+        model = new DefaultTableModel(colname, 0) 
+        {
+            public boolean isCellEditable(int row, int column) 
+            {
+               return false;
+            }
+        };
+
+        // Connection Database MySQL
+        try {
+            db = new DBConnection(); // Connection MySQL.
+            ResultSet resultSet = db.getConnect("select * from dbfood.food"); // Pull Database
+
+            while (resultSet.next())
+            {
+                String name = resultSet.getString("name");
+                String cal = resultSet.getString("calories");
+                String pt = resultSet.getString("protein");
+                String carbo = resultSet.getString("carbohydrate");
+                String fat  = resultSet.getString("fat");
+                String cd = resultSet.getString("codium");
+                String[] row = {name, cal, pt, carbo, fat, cd};
+                model.addRow(row);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        // Table edit.
+        foodTable.setModel(model);
+        foodTable.setRowHeight(30);
+        foodTable.setFont(new Font("TH SarabunPSK", Font.BOLD, 28));
+        foodTable.setSelectionBackground(new Color(0, 100, 0));
+        foodTable.setSelectionForeground(new Color(255, 255, 255));
+
+        foodTable.getTableHeader().setFont(new Font(null, Font.BOLD, 16));
+        foodTable.getTableHeader().setReorderingAllowed(false);
+        foodTable.getTableHeader().setEnabled(false);
+ 
+        // Edit colunm.
+        foodTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        foodTable.getColumnModel().getColumn(0).setPreferredWidth(407); // Name
+        foodTable.getColumnModel().getColumn(1).setPreferredWidth(80); // Calories
+        foodTable.getColumnModel().getColumn(2).setPreferredWidth(80); // Protein
+        foodTable.getColumnModel().getColumn(3).setPreferredWidth(140); // Carbo
+        foodTable.getColumnModel().getColumn(4).setPreferredWidth(80); // fat
+        foodTable.getColumnModel().getColumn(5).setPreferredWidth(80); // codium
         
-        String[][] data = {{"1", "Rice", "10", "100"}, {"", "", "", ""}, {"", "", "", ""}, {"", "", "", ""}};
-        
-        foodTable = new JTable(data, column);
-        foodTable.setRowHeight(40);
-        foodTable.setFont(new Font("", Font.PLAIN, 16));
+        // Edit Header Horizontal Alignment
+        renderer = new DefaultTableCellRenderer();
+        renderer.setHorizontalAlignment(JLabel.CENTER);
+        for (int i = 1; i < colname.length; i++) 
+        {
+            foodTable.getColumnModel().getColumn(i).setCellRenderer(renderer);
+        }
 
         scrollPane = new JScrollPane(foodTable);
-        scrollPane.setBounds(40, 80, 870, 660);
+        scrollPane.setBounds(40, 140, 870, 600);
 
         // Add zone.
         tab2.add(textmenuLabel2);
+        tab2.add(searchfoodText);
+        tab2.add(searchLabelButton);
         tab2.add(scrollPane, BorderLayout.CENTER);
     }
 
@@ -355,6 +437,8 @@ public class Home extends JFrame implements MouseListener, ActionListener
             menuLabelButton2.setForeground(new Color(255, 255, 255)); // Text-Button-2
         } else if (evt.getSource() == menuLabelButton3) {
             menuLabelButton3.setForeground(new Color(255, 255, 255)); // Text-Button-3
+        } else if (evt.getSource() == searchLabelButton) {
+            searchLabelButton.setForeground(new Color(255, 255, 255)); // Search Food Button
         }
     }
 
@@ -367,27 +451,26 @@ public class Home extends JFrame implements MouseListener, ActionListener
             menuLabelButton2.setForeground(new Color(0, 100, 0)); // Text-Button-2
         } else if (evt.getSource() == menuLabelButton3) {
             menuLabelButton3.setForeground(new Color(0, 100, 0)); // Text-Button-3
+        } else if (evt.getSource() == searchLabelButton) {
+            searchLabelButton.setForeground(new Color(0, 100, 0)); // Search Food Button
         }
     } 
 
     // Mouse Click Action.
     public void mouseClicked(MouseEvent evt)
     {
-        // Exit Button setup.
         if (evt.getSource() == exitLabelButton) {
-            System.exit(0); 
-
-        // Minimize Button setup.
+            System.exit(0); // Exit Button.
         } else if (evt.getSource() == minimizeLabelButton) {
-            setState(Frame.ICONIFIED);
-        
-        // Moving Tab.
+            setState(Frame.ICONIFIED); // Minimize Button.
         } else if (evt.getSource() == menuLabelButton1) {
-            jTabbed.setSelectedIndex(0); // Tab-Home
+            jTabbed.setSelectedIndex(0); // Tab-Home.
         } else if (evt.getSource() == menuLabelButton2) {
-            jTabbed.setSelectedIndex(1); // Tab-Menu
+            jTabbed.setSelectedIndex(1); // Tab-Menu.
         } else if (evt.getSource() == menuLabelButton3) {
-            jTabbed.setSelectedIndex(2); // Tab-BMI
+            jTabbed.setSelectedIndex(2); // Tab-BMI.
+        } else if (evt.getSource() == searchLabelButton) {
+            // Codind here // Search Food. 
         }
     }
 
@@ -408,17 +491,17 @@ public class Home extends JFrame implements MouseListener, ActionListener
         } else if (evt.getSource() == menuLabelButton3) {
             menuLabelButton3.setForeground(new Color(0, 100, 0)); // Text-Button-3
             menuLabelButton3.setBorder(BorderFactory.createLineBorder(new Color(0, 100, 0), 2)); // Border-Button-3
+        } else if (evt.getSource() == searchLabelButton) {
+            searchLabelButton.setForeground(new Color(0, 100, 0)); // Text Search.
+            searchLabelButton.setBorder(BorderFactory.createLineBorder(new Color(0, 100, 0), 2)); // Boder Search.
         }
     }
 
     // Mouse Exited Action.
     public void mouseExited(MouseEvent evt) 
     {
-        // Exit Button change color
         if (evt.getSource() == exitLabelButton) {
-            exitLabelButton.setForeground(new Color(255, 255, 255));
-
-        // Menu Text change color
+            exitLabelButton.setForeground(new Color(255, 255, 255)); //Exit Button change color
         } else if (evt.getSource() == menuLabelButton1) {
             menuLabelButton1.setForeground(new Color(0, 0, 0)); // Text-Button-1
             menuLabelButton1.setBorder(BorderFactory.createLineBorder(new Color(0, 0, 0), 2)); // Border-Button-1
@@ -428,6 +511,9 @@ public class Home extends JFrame implements MouseListener, ActionListener
         } else if (evt.getSource() == menuLabelButton3) {
             menuLabelButton3.setForeground(new Color(0, 0, 0)); // Text-Button-3
             menuLabelButton3.setBorder(BorderFactory.createLineBorder(new Color(0, 0, 0), 2)); // Border-Button-3
+        } else if (evt.getSource() == searchLabelButton) {
+            searchLabelButton.setForeground(new Color(0, 0, 0)); // Text Search.
+            searchLabelButton.setBorder(BorderFactory.createLineBorder(new Color(0, 0, 0), 2)); // Boder Search.
         }
     }
 
