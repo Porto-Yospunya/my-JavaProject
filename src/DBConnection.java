@@ -8,9 +8,9 @@ public class DBConnection
     public ResultSet resultSet;
 
     // final variable setup.
-    private final String url = "jdbc:mysql://127.0.0.1:3306/dbfood";
+    private final String url = "jdbc:mysql://localhost:3306/dbfood";
     private final String useername = "root";
-    private final String password = "16599010148porto";
+    private final String password = "0123456788project";
 
     // Connect method.
     public ResultSet getConnect(String sql)
